@@ -25,7 +25,7 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 	$scope.geometryFilterCount = 0;
 
 	$scope.selectedResult = null;
-	$scope.propertiesUrl = 'https://www.googleapis.com/mapsengine/v1/tables/17054336369362646689-11613121305523030954/features';
+	$scope.propertiesUrl = 'https://www.googleapis.com/mapsengine/v1/tables/17054336369362646689-14495543923251622067/features';
 	$scope.nextPageToken = null;
 
 	$scope.filterIntersectionMode = true;
@@ -49,7 +49,7 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 
 	var mapOptions = {
 		zoom: 12,
-		center: new google.maps.LatLng(51.507222, -0.1275),
+		center: new google.maps.LatLng(51.874722, -0.368333),
 		mapTypeId: google.maps.MapTypeId.ROADMAP
 	};
 	$scope.map = new google.maps.Map(document.getElementById("map"), mapOptions);
@@ -250,7 +250,7 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 				},
 				title: result.properties.displayable_address,				
 				icon: {					
-					url: "glyphicons/png/glyphicons_020_home.png",
+					url: "glyphicons/png/glyphicons_003_user.png",
 					scaledSize: new google.maps.Size(20,20),
 					anchor: new google.maps.Point(10,10),
 				}
@@ -258,12 +258,12 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 
 
 			marker.showInfoWindow = function() {
-				if(!this.popup) {
+				/**if(!this.popup) {
 					this.popup = new google.maps.InfoWindow({
 						content: "hello"
 					});							
 				}
-				this.popup.open($scope.map, this);
+				this.popup.open($scope.map, this);*/
 			};
 
 			marker.addListener("click", function(event){
@@ -328,7 +328,7 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 			key: $scope.googleAPIKey,
 			version: "published",
 			maxResults: 1000,
-			limit: 1000
+			limit: 2000
 			//orderBy: "price DESC",
 			//select: "geometry, displayable_address, agent_phone, price",
 			//where: "price>10" // This doesn't seem to work.
@@ -354,11 +354,14 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 				}
 
 				angular.forEach(data.features, function(feature) {
-					$scope.results.push({
-						geometry: feature.geometry,
-						properties: feature.properties,
-						id: feature.properties.listing_id
-					});
+					if(feature.geometry) {
+						$scope.results.push({
+							geometry: feature.geometry,
+							properties: feature.properties,
+							id: feature.properties.listing_id
+						});	
+					}
+					
 				});
 
 				$scope.applyGeoFilters();

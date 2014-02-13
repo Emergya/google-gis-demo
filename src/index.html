@@ -76,7 +76,7 @@
 						<select class="form-control btn btn-default" ng-model="filterIntersectionMode" ng-change="applyGeoFilters()"
 							ng-options="o.intersection as o.label for o in filterCombinationModes">                          
                         </select>
-						<ng-include src="'commute_time.html'" class="btn-group"></ng-include>
+						<!--ng-include src="'commute_time.html'" class="btn-group"></ng-include-->
 						<ng-include src="'walking_distance.html'" class="btn-group"></ng-include>
 						<ng-include src="'neighbourhoods.html'" class="btn-group"></ng-include>
 			    		<ng-include src="'geofence.html'" class="btn-group"></ng-include>
@@ -87,20 +87,8 @@
 						 	<span class="sr-only">Remove all filters</span>
 						</button>
 					</div>
-				</form>
-				
-			    <ul class="nav navbar-nav navbar-right">
-			      <li class="dropdown">
-			        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-			        <ul class="dropdown-menu topbar">
-			          <li><a href="#">Action</a></li>
-			          <li><a href="#">Another action</a></li>
-			          <li><a href="#">Something else here</a></li>
-			          <li class="divider"></li>
-			          <li><a href="#">Separated link</a></li>
-			        </ul>
-			      </li>
-				</ul>
+				</form>				
+			    
 			</div><!-- /.navbar-collapse -->
 		</nav>
 		
@@ -118,9 +106,9 @@
 								  	Loading <span class="glyphicon glyphicon-refresh spin"></span> 
 							</a>
 							
-							<a href="#" class="list-group-item" ng-repeat="result in geoFilteredResults|orderBy:'-properties.price'|filter:filter" ng-class="{active: result.active}" ng-click="resultClicked(result)">
-								<h4 class="list-group-item-heading">{{result.properties.displayable_address}}: {{statusLabels[result.properties.status]}}</h4>
-								<p class="list-group-item-text">{{result.properties.price | number}} &pound; | {{result.properties.agent_phone}}</p>								    
+							<a href="#" class="list-group-item" ng-repeat="result in geoFilteredResults" ng-class="{active: result.active}" ng-click="resultClicked(result)">
+								<h4 class="list-group-item-heading">{{result.properties.gx_location}}: {{result.properties.packagegroupdescription}}</h4>
+								<p class="list-group-item-text">{{result.properties.City}} ({{result.properties.CountyState}})</p>								    
 							</a>
 							
 						
