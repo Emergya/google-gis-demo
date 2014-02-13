@@ -106,6 +106,7 @@ googleGisDemo.controller("WalkingDistanceCtrl", function($scope, $http) {
 	};
 	
 	$scope.timeChange = function() {
+		$scope.toolFilter.clear();
 		angular.forEach($scope.tubeLines, function(line){
 			if(line.checked) {
 				angular.forEach(line._displayGeometry, function(g){
