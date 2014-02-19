@@ -67,32 +67,84 @@ googleGisDemo.controller("AppCtrl", function($scope, $http, $filter) {
 
 
 	$scope.applyGeoFilters = function() {
-		var filtered = [];
 		
-		console.time("applyGeoFilters");
-
-		// We initialize the carets of the tools.
-		for(var toolFilterKey in $scope.geometryFilters) {			
-			var toolFilter = $scope.geometryFilters[toolFilterKey];
-			toolFilter.featuresMatching = 0;
+		if(!$scope.results.length) {
+			return;
 		}
+		
+		var filtered = [];
 
+		var worker = new Worker("js/filteringWorker.js");
 
-		angular.forEach($scope.results, function(result) {
-			if($scope.checkGeoFilters(result)) {
-				filtered.push(result);
+		worker.addEventListener("message", function(e) {
+
+			switch(e.data.type) {
+				case "time":
+					console.time(e.data.identifier);
+					break;
+				case "timeEnd":
+					console.timeEnd(e.data.identifier);
+					break;
+				case "debug":
+					console.debug(e.data.payload);
+					break;
+				case "finished":
+					
+					console.time("processResults");
+
+					$scope.$apply(function() {
+						// var results = [];
+						// for(var i=0; i < e.data.filteredResults.length; i++) {
+						// 	results.push($scope.results[e.data.filteredResults[i]]);
+						// }
+
+						$scope.geoFilteredResults = e.data.filteredResults;
+					});
+
+					console.timeEnd("processResults");
+					break;
+				default:
+					throw new Error("not supported message from filter worker!");
+
 			}
 		});
-
-		for(var toolFilterKey in $scope.geometryFilters) {			
-			var toolFilter = $scope.geometryFilters[toolFilterKey];
-			toolFilter.hasResults = toolFilter.featuresMatching>0;
-		}
+		worker.addEventListener("error", function(e){
+			console.debug(e);
+		});
 
 
-		$scope.geoFilteredResults = filtered;	
+		console.time("stringify");
+		worker.postMessage(JSON.stringify({
+			geometryFilters: $scope.geometryFilters,
+			results: $scope.results,
+			filterIntersectionMode: $scope.filterIntersectionMode
+		}));
+		console.timeEnd("stringify");
 		
-		console.timeEnd("applyGeoFilters");
+		// console.time("applyGeoFilters");
+
+		// // We initialize the carets of the tools.
+		// for(var toolFilterKey in $scope.geometryFilters) {			
+		// 	var toolFilter = $scope.geometryFilters[toolFilterKey];
+		// 	toolFilter.featuresMatching = 0;
+		// }
+
+
+		// angular.forEach($scope.results, function(result) {
+		// 	if($scope.checkGeoFilters(result)) {
+		// 		filtered.push(result);
+		// 	}
+		// });
+
+		// for(var toolFilterKey in $scope.geometryFilters) {			
+		// 	var toolFilter = $scope.geometryFilters[toolFilterKey];
+		// 	toolFilter.hasResults = toolFilter.featuresMatching>0;
+		// }
+
+
+		// $scope.geoFilteredResults = filtered;	
+		
+		// console.timeEnd("applyGeoFilters");
 	};
 	
 	/**
